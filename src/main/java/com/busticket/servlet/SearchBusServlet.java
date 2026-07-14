@@ -19,7 +19,7 @@ public class SearchBusServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         String source = request.getParameter("source");
@@ -32,5 +32,14 @@ public class SearchBusServlet extends HttpServlet {
         request.setAttribute("busList", busList);
 
         request.getRequestDispatcher("busList.jsp").forward(request, response);
+    }
+
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        doPost(request, response);
+
     }
 }

@@ -13,47 +13,48 @@ import com.busticket.model.Bus;
 
 public class BusDAOImpl implements BusDAO {
 
-    @Override
-    public List<Bus> searchBus(String source, String destination) {
+	@Override
+	public List<Bus> searchBus(String source, String destination) {
 
-        List<Bus> busList = new ArrayList<>();
+	    List<Bus> busList = new ArrayList<>();
 
-        String sql = "SELECT b.* FROM bus b "
-                + "JOIN route r ON b.route_id = r.route_id "
-                + "WHERE r.source = ? AND r.destination = ?";
+	    String sql = "SELECT b.* FROM bus b "
+	               + "JOIN route r ON b.route_id = r.route_id "
+	               + "WHERE LOWER(r.source) LIKE LOWER(?) "
+	               + "AND LOWER(r.destination) LIKE LOWER(?)";
 
-        try {
-            Connection con = DBConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement(sql);
+	    try {
 
-            ps.setString(1, source);
-            ps.setString(2, destination);
+	        Connection con = DBConnection.getConnection();
+	        PreparedStatement ps = con.prepareStatement(sql);
 
-            ResultSet rs = ps.executeQuery();
+	        ps.setString(1, "%" + source + "%");
+	        ps.setString(2, "%" + destination + "%");
 
-            while (rs.next()) {
+	        ResultSet rs = ps.executeQuery();
 
-                Bus bus = new Bus();
+	        while (rs.next()) {
 
-                bus.setBusId(rs.getInt("bus_id"));
-                bus.setBusName(rs.getString("bus_name"));
-                bus.setBusNumber(rs.getString("bus_number"));
-                bus.setRouteId(rs.getInt("route_id"));
-                bus.setDepartureTime(rs.getString("departure_time"));
-                bus.setArrivalTime(rs.getString("arrival_time"));
-                bus.setFare(rs.getDouble("fare"));
-                bus.setImageUrl(rs.getString("image_url"));
+	            Bus bus = new Bus();
 
-                busList.add(bus);
-            }
+	            bus.setBusId(rs.getInt("bus_id"));
+	            bus.setBusName(rs.getString("bus_name"));
+	            bus.setBusNumber(rs.getString("bus_number"));
+	            bus.setRouteId(rs.getInt("route_id"));
+	            bus.setDepartureTime(rs.getString("departure_time"));
+	            bus.setArrivalTime(rs.getString("arrival_time"));
+	            bus.setFare(rs.getDouble("fare"));
+	            bus.setImageUrl(rs.getString("image_url"));
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+	            busList.add(bus);
+	        }
 
-        return busList;
-    }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
 
+	    return busList;
+	}
     @Override
     public boolean addBus(Bus bus) {
         return false;
